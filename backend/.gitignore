@@ -1,0 +1,20 @@
+# FILE: .gitignore
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.production
+
+# Dependencies
+node_modules/
+
+# Prisma
+prisma/migrations/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

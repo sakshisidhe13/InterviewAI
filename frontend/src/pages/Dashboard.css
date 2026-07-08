@@ -1,0 +1,822 @@
+/* =============================================
+   FILE: src/pages/Dashboard.css
+   PURPOSE: All styles for the Dashboard page
+   Save at: src/pages/Dashboard.css
+   ============================================= */
+
+/* ── 1. DESIGN TOKENS ─────────────────────────────────────────────
+   All colors, radii, shadows defined as CSS variables.
+   Change here, updates everywhere.                                  */
+:root {
+  /* Backgrounds — layered dark surfaces */
+  --db-bg:          #080b14;   /* Page background: deepest navy-black */
+  --db-sidebar-bg:  #0d1120;   /* Sidebar: slightly lighter */
+  --db-surface:     #111827;   /* Cards / table surface */
+  --db-surface-2:   #161d2e;   /* Hover / elevated surface */
+
+  /* Borders */
+  --db-border:      rgba(255, 255, 255, 0.07);
+  --db-border-light:rgba(255, 255, 255, 0.12);
+
+  /* Typography */
+  --db-text-primary:   #e8eaf2;
+  --db-text-secondary: #6b7280;
+  --db-text-muted:     #3d4557;
+
+  /* Accent palette — blue/purple gradient family */
+  --accent-blue:   #4f8ef7;
+  --accent-purple: #8b5cf6;
+  --accent-teal:   #2dd4bf;
+  --accent-grad:   linear-gradient(135deg, #4f8ef7 0%, #8b5cf6 100%);
+
+  /* Status colors */
+  --color-excellent: #10b981;
+  --color-good:      #f59e0b;
+  --color-average:   #ef4444;
+
+  /* Misc */
+  --db-radius-sm:  8px;
+  --db-radius-md:  14px;
+  --db-radius-lg:  20px;
+  --db-sidebar-w:  240px;
+  --db-navbar-h:   70px;
+
+  --db-shadow:     0 4px 24px rgba(0, 0, 0, 0.5);
+  --db-glow-blue:  0 0 20px rgba(79, 142, 247, 0.18);
+}
+
+/* ── 2. RESET (scoped to dashboard) ──────────────────────────────  */
+.db-shell *,
+.db-shell *::before,
+.db-shell *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.db-shell button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+}
+
+/* ── 3. SHELL — sidebar + right panel side by side ────────────────  */
+.db-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--db-bg);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--db-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── 4. SIDEBAR ───────────────────────────────────────────────────  */
+.db-sidebar {
+  width: var(--db-sidebar-w);
+  min-height: 100vh;
+  background: var(--db-sidebar-bg);
+  border-right: 1px solid var(--db-border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;          /* Stays fixed while content scrolls */
+  top: 0;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+/* Logo row */
+.db-sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  height: var(--db-navbar-h);
+  border-bottom: 1px solid var(--db-border);
+  flex-shrink: 0;
+}
+
+.db-logo-icon {
+  font-size: 1.3rem;
+  /* The lightning bolt gets a gradient glow via filter */
+  filter: drop-shadow(0 0 6px rgba(79, 142, 247, 0.7));
+}
+
+.db-logo-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  /* Gradient text — the signature design element */
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.3px;
+}
+
+/* Nav list */
+.db-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 12px;
+  flex: 1;
+}
+
+/* Each nav button */
+.db-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--db-radius-sm);
+  color: var(--db-text-secondary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  position: relative;
+  transition: background 0.18s, color 0.18s;
+  text-align: left;
+  width: 100%;
+}
+
+.db-nav-item:hover {
+  background: var(--db-surface-2);
+  color: var(--db-text-primary);
+}
+
+/* Active state — gradient background strip */
+.db-nav-item--active {
+  background: rgba(79, 142, 247, 0.12);
+  color: var(--accent-blue);
+}
+
+.db-nav-item--active:hover {
+  background: rgba(79, 142, 247, 0.18);
+}
+
+/* Active indicator dot on the right edge */
+.db-nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  margin-left: auto;
+  box-shadow: 0 0 6px rgba(79, 142, 247, 0.8);
+}
+
+.db-nav-icon {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.db-nav-label {
+  white-space: nowrap;
+}
+
+/* Bottom upgrade card */
+.db-sidebar-footer {
+  padding: 16px 12px 20px;
+  flex-shrink: 0;
+}
+
+.db-upgrade-card {
+  background: linear-gradient(135deg, rgba(79,142,247,0.15) 0%, rgba(139,92,246,0.15) 100%);
+  border: 1px solid rgba(79, 142, 247, 0.25);
+  border-radius: var(--db-radius-md);
+  padding: 16px;
+}
+
+.db-upgrade-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--db-text-primary);
+  margin-bottom: 5px;
+}
+
+.db-upgrade-sub {
+  font-size: 0.75rem;
+  color: var(--db-text-secondary);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.db-upgrade-btn {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background: var(--accent-grad);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--db-radius-sm);
+  text-align: center;
+  transition: opacity 0.18s, transform 0.15s;
+}
+
+.db-upgrade-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+/* ── 5. RIGHT PANEL ───────────────────────────────────────────────  */
+.db-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevents flex overflow */
+}
+
+/* ── 6. TOP NAVBAR ────────────────────────────────────────────────  */
+.db-navbar {
+  height: var(--db-navbar-h);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 28px;
+  background: var(--db-sidebar-bg);
+  border-bottom: 1px solid var(--db-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.db-navbar-title {
+  flex-shrink: 0;
+}
+
+.db-page-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--db-text-primary);
+  letter-spacing: -0.3px;
+  line-height: 1;
+}
+
+.db-page-date {
+  font-size: 0.73rem;
+  color: var(--db-text-secondary);
+  margin-top: 3px;
+}
+
+/* Search bar — stretches to fill remaining space */
+.db-search-wrap {
+  flex: 1;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--db-surface);
+  border: 1px solid var(--db-border);
+  border-radius: var(--db-radius-sm);
+  padding: 0 14px;
+  height: 40px;
+  transition: border-color 0.2s;
+}
+
+.db-search-wrap:focus-within {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.12);
+}
+
+.db-search-icon {
+  font-size: 0.85rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.db-search-input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--db-text-primary);
+  font-size: 0.88rem;
+  width: 100%;
+}
+
+.db-search-input::placeholder {
+  color: var(--db-text-muted);
+}
+
+/* Right side: notification + avatar */
+.db-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Notification bell */
+.db-notif-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--db-surface);
+  border: 1px solid var(--db-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s;
+}
+
+.db-notif-btn:hover {
+  background: var(--db-surface-2);
+}
+
+.db-notif-icon {
+  font-size: 1rem;
+}
+
+/* Red unread badge */
+.db-notif-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--db-sidebar-bg);
+}
+
+/* Profile avatar circle with gradient */
+.db-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--accent-grad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  box-shadow: var(--db-glow-blue);
+}
+
+.db-avatar-initials {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+/* ── 7. MAIN CONTENT AREA ─────────────────────────────────────────  */
+.db-main {
+  flex: 1;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+/* ── 8. STAT CARDS ────────────────────────────────────────────────  */
+.db-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.db-stat-card {
+  background: var(--db-surface);
+  border: 1px solid var(--db-border);
+  border-radius: var(--db-radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle gradient top-edge accent line */
+.db-stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent-grad);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.db-stat-card:hover {
+  border-color: var(--db-border-light);
+  transform: translateY(-3px);
+  box-shadow: var(--db-shadow);
+}
+
+.db-stat-card:hover::before {
+  opacity: 1;
+}
+
+/* Icon bubble */
+.db-stat-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--db-radius-sm);
+  background: rgba(79, 142, 247, 0.1);
+  border: 1px solid rgba(79, 142, 247, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.db-stat-icon {
+  font-size: 1.2rem;
+}
+
+.db-stat-body {
+  margin-bottom: 10px;
+}
+
+.db-stat-label {
+  font-size: 0.75rem;
+  color: var(--db-text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 5px;
+}
+
+.db-stat-value {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--db-text-primary);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+/* Delta tag */
+.db-stat-delta {
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-top: auto;
+}
+
+.delta-pos {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--color-excellent);
+}
+
+.delta-neg {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--color-average);
+}
+
+.delta-neutral {
+  background: rgba(107, 114, 128, 0.15);
+  color: var(--db-text-secondary);
+}
+
+/* ── 9. BOTTOM ROW (table + weak topics) ─────────────────────────  */
+.db-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 360px;  /* Table takes remaining space, topics fixed */
+  gap: 20px;
+  align-items: start;
+}
+
+/* Shared section card style */
+.db-table-section,
+.db-weak-section {
+  background: var(--db-surface);
+  border: 1px solid var(--db-border);
+  border-radius: var(--db-radius-md);
+  padding: 22px;
+}
+
+/* Section header row (title + "See all" link) */
+.db-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.db-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--db-text-primary);
+  letter-spacing: -0.2px;
+}
+
+.db-see-all {
+  font-size: 0.78rem;
+  color: var(--accent-blue);
+  font-weight: 600;
+  transition: opacity 0.18s;
+}
+
+.db-see-all:hover {
+  opacity: 0.7;
+}
+
+/* ── 10. TABLE ────────────────────────────────────────────────────  */
+.db-table-wrap {
+  overflow-x: auto;  /* Horizontal scroll on small screens */
+}
+
+.db-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.db-table thead tr {
+  border-bottom: 1px solid var(--db-border);
+}
+
+.db-table th {
+  text-align: left;
+  padding: 0 12px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--db-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+}
+
+.db-table tbody tr {
+  border-bottom: 1px solid var(--db-border);
+  transition: background 0.15s;
+}
+
+.db-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.db-table tbody tr:hover {
+  background: var(--db-surface-2);
+}
+
+.db-table td {
+  padding: 13px 12px;
+  color: var(--db-text-primary);
+  vertical-align: middle;
+}
+
+/* Company cell: dot + name */
+.db-company-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Colored initial dot */
+.db-company-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--accent-grad);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.db-role-cell {
+  color: var(--db-text-secondary);
+  font-size: 0.82rem;
+}
+
+.db-date-cell {
+  color: var(--db-text-secondary);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+/* Inline score bar */
+.db-score-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 130px;
+}
+
+.db-score-num {
+  font-weight: 600;
+  font-size: 0.85rem;
+  min-width: 36px;
+}
+
+.db-score-bar-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.db-score-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent-grad);
+  transition: width 0.6s ease;
+}
+
+/* Status badge pill */
+.db-status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge-excellent {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--color-excellent);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+}
+
+.badge-good {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--color-good);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+}
+
+.badge-average {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--color-average);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+}
+
+/* ── 11. WEAK TOPICS ──────────────────────────────────────────────  */
+.db-weak-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-bottom: 20px;
+}
+
+.db-weak-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.db-weak-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.db-weak-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--db-text-primary);
+}
+
+.db-weak-pct {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--db-text-primary);
+}
+
+/* Progress bar track */
+.db-progress-track {
+  height: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+/* Filled portion — color injected inline */
+.db-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.db-weak-hint {
+  font-size: 0.73rem;
+  color: var(--db-text-secondary);
+}
+
+/* Focused practice CTA button */
+.db-practice-btn {
+  width: 100%;
+  padding: 11px;
+  background: linear-gradient(135deg, rgba(79,142,247,0.15) 0%, rgba(139,92,246,0.15) 100%);
+  border: 1px solid rgba(79, 142, 247, 0.28);
+  border-radius: var(--db-radius-sm);
+  color: var(--accent-blue);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.db-practice-btn:hover {
+  background: linear-gradient(135deg, rgba(79,142,247,0.25) 0%, rgba(139,92,246,0.25) 100%);
+  transform: translateY(-1px);
+}
+
+/* ── 12. RESPONSIVE ───────────────────────────────────────────────  */
+
+/* Tablet: collapse to 2 stat cards per row */
+@media (max-width: 1100px) {
+  .db-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .db-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Small tablet: hide sidebar labels, shrink to icon rail */
+@media (max-width: 820px) {
+  :root { --db-sidebar-w: 64px; }
+
+  .db-logo-text,
+  .db-nav-label,
+  .db-upgrade-card,
+  .db-nav-dot {
+    display: none;
+  }
+
+  .db-sidebar-logo {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .db-nav-item {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .db-nav-icon {
+    font-size: 1.2rem;
+  }
+}
+
+/* Mobile: stack everything vertically */
+@media (max-width: 600px) {
+  .db-shell {
+    flex-direction: column;
+  }
+
+  .db-sidebar {
+    width: 100%;
+    min-height: unset;
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--db-border);
+  }
+
+  .db-sidebar-nav {
+    flex-direction: row;
+    padding: 8px;
+    gap: 4px;
+  }
+
+  .db-sidebar-footer,
+  .db-sidebar-logo {
+    display: none;
+  }
+
+  .db-cards-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .db-navbar {
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  .db-main {
+    padding: 16px;
+  }
+
+  .db-search-wrap {
+    max-width: 180px;
+  }
+}
