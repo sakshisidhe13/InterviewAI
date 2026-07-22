@@ -22,23 +22,42 @@ model User {
 }
 
 model Interview {
-  id        String   @id @default(uuid())
-  userId    String
-  company   String
-  role      String
-  score     Int
-  notes     String?
-  createdAt DateTime @default(now())
+  id                 String   @id @default(uuid())
+  userId             String
+  resumeId           String?
+  company            String?
+  role               String
+  difficulty         String
+  status             String   @default("IN_PROGRESS")
+  currentQuestion    Int      @default(1)
+  totalQuestions     Int      @default(8)
+  overallScore       Int?
+  communicationScore Int?
+  technicalScore     Int?
+  confidenceScore    Int?
+  summary            String?
+  transcript         Json?
+  feedback           Json?
+  recommendation     String?
+  createdAt          DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  resume Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
 }
 
 model Resume {
-  id        String   @id @default(uuid())
-  userId    String
-  score     Int
-  feedback  String?
-  createdAt DateTime @default(now())
+  id            String   @id @default(uuid())
+  userId        String
+  originalName  String
+  resumeText    String   @db.Text
+  score         Int
+  atsScore      Int?
+  feedback      String?
+  analysis      Json
+  createdAt     DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  interviews Interview[]
 }

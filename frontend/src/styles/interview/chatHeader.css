@@ -1,0 +1,27 @@
+.chat-header {
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #1f2937;
+    background: #111827;
+}
+
+.chat-header h2 {
+    color: white;
+    margin-bottom: .25rem;
+}
+
+.chat-header p {
+    color: #9ca3af;
+    font-size: .9rem;
+}
+
+.question-counter {
+    background: #2563eb;
+    color: white;
+    padding: .6rem 1rem;
+    border-radius: 999px;
+    font-size: .9rem;
+    font-weight: 600;
+}

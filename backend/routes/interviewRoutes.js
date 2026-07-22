@@ -6,17 +6,23 @@ const router = express.Router();
 
 const authenticate = require("../middleware/authenticate");
 const {
-  createInterview,
   getInterviews,
   getInterviewById,
   deleteInterview,
 } = require("../controllers/interviewController");
+const {
+  startInterview,
+  sendMessage,
+  finishInterview,
+} = require("../controllers/interviewChatController");
 
 // All routes in this file are protected
 router.use(authenticate);
 
-// POST /api/interviews — log a new interview result
-router.post("/", createInterview);
+// AI Mock Interview flow
+router.post("/start", startInterview);
+router.post("/:id/message", sendMessage);
+router.post("/:id/end", finishInterview);
 
 // GET /api/interviews — list all interviews for the logged-in user
 router.get("/", getInterviews);

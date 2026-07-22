@@ -1,7 +1,8 @@
 // FILE: src/lib/api.js
 // Centralizes all calls to the backend so every page does it the same way.
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE =
+  import.meta.env.VITE_BACKEND_URL || "http://localhost:5001/api"; // default to local dev server
 
 // Reads the saved login token (set after a successful login/signup)
 function getToken() {
@@ -33,34 +34,76 @@ async function request(path, options = {}) {
 export const api = {
   // ── AUTH ────────────────────────────────────────────────────────
   signup: (name, email, password) =>
-    request("/auth/signup", { method: "POST", body: JSON.stringify({ name, email, password }) }),
+    request("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+    }),
 
   login: (email, password) =>
-    request("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
+    request("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    }),
 
   getMe: () => request("/auth/me"),
 
   // ── INTERVIEWS ──────────────────────────────────────────────────
+  startInterview: (data) =>
+    request("/interviews/start", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
   getInterviews: () => request("/interviews"),
+  getInterview: (id) => request(`/interviews/${id}`),
+  deleteInterview: (id) =>
+    request(`/interviews/${id}`, {
+      method: "DELETE",
+    }),
 
   createInterview: (company, role, score, notes) =>
-    request("/interviews", { method: "POST", body: JSON.stringify({ company, role, score, notes }) }),
+    request("/interviews", {
+      method: "POST",
+      body: JSON.stringify({ company, role, score, notes }),
+    }),
 
+  sendInterviewMessage: (id, answer) =>
+    request(`/interviews/${id}/message`, {
+      method: "POST",
+      body: JSON.stringify({ answer }),
+    }),
+
+  finishInterview: (id) =>
+    request(`/interviews/${id}/end`, {
+      method: "POST",
+    }),
   // ── RESUMES ─────────────────────────────────────────────────────
   getResumes: () => request("/resumes"),
 
-  createResume: (score, feedback) =>
-    request("/resumes", { method: "POST", body: JSON.stringify({ score, feedback }) }),
+  getResume: (id) => request(`/resumes/${id}`),
+
+  deleteResume: (id) =>
+    request(`/resumes/${id}`, {
+      method: "DELETE",
+    }),
 
   // ── AI FEATURES ─────────────────────────────────────────────────
   getInterviewFeedback: (company, role, score, notes) =>
-    request("/ai/interview-feedback", { method: "POST", body: JSON.stringify({ company, role, score, notes }) }),
+    request("/ai/interview-feedback", {
+      method: "POST",
+      body: JSON.stringify({ company, role, score, notes }),
+    }),
 
   getResumeFeedback: (score, feedback) =>
-    request("/ai/resume-feedback", { method: "POST", body: JSON.stringify({ score, feedback }) }),
+    request("/ai/resume-feedback", {
+      method: "POST",
+      body: JSON.stringify({ score, feedback }),
+    }),
 
   generateQuestions: (company, role) =>
-    request("/ai/generate-questions", { method: "POST", body: JSON.stringify({ company, role }) }),
+    request("/ai/generate-questions", {
+      method: "POST",
+      body: JSON.stringify({ company, role }),
+    }),
 
   // ── AI RESUME UPLOAD ────────────────────────────────────────────
   // This one is different — sends a file, not JSON

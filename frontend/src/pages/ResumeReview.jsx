@@ -1,70 +1,36 @@
 // FILE: src/pages/ResumeReview.jsx
-// PURPOSE: Form to log a resume score/feedback into the backend
+// PURPOSE: Temporary placeholder for the upcoming Resume Analysis page.
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import SectionHeader from "../components/layout/SectionHeader";
 import "./Dashboard.css";
-import { api } from "../lib/api";
 
 function ResumeReview() {
-  const navigate = useNavigate();
-  const [score, setScore] = useState(70);
-  const [feedback, setFeedback] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      await api.createResume(score, feedback);
-      navigate("/dashboard");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     <div className="db-shell">
       <div className="db-right" style={{ gridColumn: "1 / -1" }}>
         <main className="db-main">
-          <section className="db-table-section" style={{ maxWidth: 520, margin: "40px auto" }}>
-            <h2 className="db-section-title">Log a Resume Review</h2>
+          <section style={{ maxWidth: 900, margin: "0 auto" }}>
+            <SectionHeader
+              eyebrow="Resume Analysis"
+              description="This page is being redesigned to match the Interview Analysis experience."
+            />
 
-            {error && <p style={{ color: "#e5484d", marginTop: 8 }}>{error}</p>}
+            <div className="rounded-2xl border border-slate-800/60 bg-slate-900/30 p-10 text-center">
+              <h2 className="text-2xl font-semibold text-white">
+                Resume Analysis Redesign in Progress
+              </h2>
 
-            <form onSubmit={handleSubmit} className="auth-form" style={{ marginTop: 16 }}>
-              <div className="form-group">
-                <label htmlFor="score">Score (0–100)</label>
-                <input
-                  id="score"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={score}
-                  onChange={(e) => setScore(e.target.value)}
-                  required
-                />
-              </div>
+              <p className="mt-4 text-slate-300 leading-7">
+                The legacy manual review form has been retired. This page will soon
+                display a complete AI-powered resume report using the same reusable
+                components as the Interview Analysis page.
+              </p>
 
-              <div className="form-group">
-                <label htmlFor="feedback">Feedback (optional)</label>
-                <textarea
-                  id="feedback"
-                  rows="4"
-                  placeholder="Notes on formatting, content, keywords..."
-                  value={feedback}
-                  onChange={(e) => setFeedback(e.target.value)}
-                />
-              </div>
-
-              <button type="submit" className="btn-primary btn-full" disabled={loading}>
-                {loading ? "Saving..." : "Save Resume Review"}
-              </button>
-            </form>
+              <Link to="/dashboard" className="btn-primary inline-block mt-8">
+                Back to Dashboard
+              </Link>
+            </div>
           </section>
         </main>
       </div>

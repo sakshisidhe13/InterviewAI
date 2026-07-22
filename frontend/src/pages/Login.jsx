@@ -3,8 +3,8 @@
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "../components/landing/Navbar";
+import Footer from "../components/landing/Footer";
 import { api, saveSession } from "../lib/api";
 
 function Login() {

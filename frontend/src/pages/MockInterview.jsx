@@ -1,101 +1,175 @@
-// FILE: src/pages/MockInterview.jsx
-// PURPOSE: Form to log a completed interview into the backend
-
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Dashboard.css";
+import { useEffect, useState } from "react";
 import { api } from "../lib/api";
+import InterviewSetupForm from "../components/interview/InterviewSetupForm";
+import "../styles/interview/mockInterview.css";
+import InterviewChat from "../components/interview/InterviewChat";
+import { useNavigate } from "react-router-dom";
 
-function MockInterview() {
+export default function MockInterview() {
   const navigate = useNavigate();
+  const [resumes, setResumes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [resumeId, setResumeId] = useState("");
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
-  const [score, setScore] = useState(70);
-  const [notes, setNotes] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [difficulty, setDifficulty] = useState("Medium");
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  const [startingInterview, setStartingInterview] = useState(false);
+  const [interviewId, setInterviewId] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [interviewStarted, setInterviewStarted] = useState(false);
+
+  const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [totalQuestions, setTotalQuestions] = useState(8);
+  const [completed, setCompleted] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  async function finishInterviewFlow() {
+    setCompleted(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const result = await api.finishInterview(interviewId);
+
+    console.log("Interview evaluation:", result);
+
+    navigate(`/interviews/${interviewId}`);
+  }
+
+  async function handleSendAnswer(answer) {
+    setSending(true);
     try {
-      await api.createInterview(company, role, score, notes);
-      navigate("/dashboard");
+      setError("");
+      setMessages((prev) => [...prev, { role: "user", content: answer }]);
+      const response = await api.sendInterviewMessage(interviewId, answer);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: response.question.question,
+          topic: response.question.topic,
+          difficulty: response.question.difficulty,
+          questionType: response.question.questionType,
+        },
+      ]);
+      setCurrentQuestion(response.currentQuestion);
+      if (response.totalQuestions) {
+        setTotalQuestions(response.totalQuestions);
+      }
+      if (response.completed) {
+        await finishInterviewFlow();
+        return;
+      }
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+      setError(err.message || "Failed to send answer.");
     } finally {
-      setLoading(false);
+      setSending(false);
+    }
+  }
+
+  useEffect(() => {
+    async function loadResumes() {
+      try {
+        const data = await api.getResumes();
+        setResumes(data.resumes || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadResumes();
+  }, []);
+
+  async function handleStartInterview() {
+    if (!resumeId) {
+      alert("Please select a resume.");
+      return;
+    }
+
+    if (!company.trim()) {
+      alert("Please enter a company name.");
+      return;
+    }
+
+    if (!role.trim()) {
+      alert("Please enter a role.");
+      return;
+    }
+
+    try {
+      setStartingInterview(true);
+      setError("");
+
+      const response = await api.startInterview({
+        resumeId,
+        company,
+        role,
+        difficulty,
+      });
+
+      setInterviewId(response.interviewId);
+
+      setMessages([
+        {
+          role: "assistant",
+          content: response.question.question,
+          topic: response.question.topic,
+          difficulty: response.question.difficulty,
+          questionType: response.question.questionType,
+        },
+      ]);
+      setCurrentQuestion(1);
+      setTotalQuestions(response.totalQuestions || 8);
+      setCompleted(false);
+
+      setInterviewStarted(true);
+
+      console.log("Interview created:", response.interviewId);
+      console.log("First question:", response.question);
+    } catch (err) {
+      setError(err.message || "Failed to start interview.");
+    } finally {
+      setStartingInterview(false);
     }
   }
 
   return (
-    <div className="db-shell">
-      <div className="db-right" style={{ gridColumn: "1 / -1" }}>
-        <main className="db-main">
-          <section className="db-table-section" style={{ maxWidth: 520, margin: "40px auto" }}>
-            <h2 className="db-section-title">Log a Mock Interview</h2>
-
-            {error && <p style={{ color: "#e5484d", marginTop: 8 }}>{error}</p>}
-
-            <form onSubmit={handleSubmit} className="auth-form" style={{ marginTop: 16 }}>
-              <div className="form-group">
-                <label htmlFor="company">Company</label>
-                <input
-                  id="company"
-                  type="text"
-                  placeholder="e.g. Google"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="role">Role</label>
-                <input
-                  id="role"
-                  type="text"
-                  placeholder="e.g. SWE Intern"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="score">Score (0–100)</label>
-                <input
-                  id="score"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={score}
-                  onChange={(e) => setScore(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="notes">Notes (optional)</label>
-                <textarea
-                  id="notes"
-                  rows="4"
-                  placeholder="What went well, what to improve..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                />
-              </div>
-
-              <button type="submit" className="btn-primary btn-full" disabled={loading}>
-                {loading ? "Saving..." : "Save Interview"}
-              </button>
-            </form>
-          </section>
-        </main>
-      </div>
+    <div className="mock-interview-page">
+      {interviewStarted ? (
+        <InterviewChat
+          interviewId={interviewId}
+          messages={messages}
+          company={company}
+          role={role}
+          currentQuestion={currentQuestion}
+          totalQuestions={totalQuestions}
+          completed={completed}
+          onSendAnswer={handleSendAnswer}
+          sending={sending}
+          error={error}
+        />
+      ) : (
+        <InterviewSetupForm
+          resumes={resumes}
+          loading={loading}
+          error={error}
+          resumeId={resumeId}
+          setResumeId={setResumeId}
+          company={company}
+          setCompany={setCompany}
+          role={role}
+          setRole={setRole}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+          startingInterview={startingInterview}
+          onStartInterview={handleStartInterview}
+        />
+      )}
     </div>
   );
 }
-
-export default MockInterview;

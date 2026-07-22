@@ -1,0 +1,46 @@
+.chat-footer {
+    border-top: 1px solid #1f2937;
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    background: #111827;
+}
+
+.chat-footer textarea {
+    flex: 1;
+    resize: none;
+    min-height: 50px;
+    max-height: 120px;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    border: 1px solid #374151;
+    background: #1f2937;
+    color: white;
+    font-size: .95rem;
+}
+
+.chat-footer textarea:focus {
+    outline: none;
+    border-color: #4f7cff;
+}
+
+.chat-footer button {
+    border: none;
+    border-radius: 14px;
+    padding: 0.8rem 1.25rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(
+        90deg,
+        #4f7cff,
+        #7c5cff
+    );
+    transition: .2s;
+}
+
+.chat-footer button:hover {
+    transform: translateY(-2px);
+}

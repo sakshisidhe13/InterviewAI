@@ -9,10 +9,10 @@
    Change here, updates everywhere.                                  */
 :root {
   /* Backgrounds — layered dark surfaces */
-  --db-bg:          #080b14;   /* Page background: deepest navy-black */
-  --db-sidebar-bg:  #0d1120;   /* Sidebar: slightly lighter */
-  --db-surface:     #111827;   /* Cards / table surface */
-  --db-surface-2:   #161d2e;   /* Hover / elevated surface */
+  --db-bg: #0b1120;
+--db-sidebar-bg: #111827;
+--db-surface: #1e293b;
+--db-surface-2: #273449;
 
   /* Borders */
   --db-border:      rgba(255, 255, 255, 0.07);
@@ -38,7 +38,7 @@
   --db-radius-sm:  8px;
   --db-radius-md:  14px;
   --db-radius-lg:  20px;
-  --db-sidebar-w:  240px;
+  --db-sidebar-w:  260px;
   --db-navbar-h:   70px;
 
   --db-shadow:     0 4px 24px rgba(0, 0, 0, 0.5);
@@ -66,7 +66,7 @@
   display: flex;
   min-height: 100vh;
   background: var(--db-bg);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   color: var(--db-text-primary);
   -webkit-font-smoothing: antialiased;
 }
@@ -372,7 +372,7 @@
 /* ── 7. MAIN CONTENT AREA ─────────────────────────────────────────  */
 .db-main {
   flex: 1;
-  padding: 28px;
+  padding: 36px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -454,7 +454,7 @@
 }
 
 .db-stat-value {
-  font-size: 1.9rem;
+  font-size: 2.3rem;
   font-weight: 800;
   color: var(--db-text-primary);
   letter-spacing: -1px;
@@ -487,11 +487,10 @@
 }
 
 /* ── 9. BOTTOM ROW (table + weak topics) ─────────────────────────  */
-.db-bottom-row {
-  display: grid;
-  grid-template-columns: 1fr 360px;  /* Table takes remaining space, topics fixed */
-  gap: 20px;
-  align-items: start;
+.db-bottom-row{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
 }
 
 /* Shared section card style */
@@ -547,11 +546,11 @@
 .db-table th {
   text-align: left;
   padding: 0 12px 12px;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--db-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
   white-space: nowrap;
 }
 
@@ -569,39 +568,11 @@
 }
 
 .db-table td {
-  padding: 13px 12px;
+  padding: 18px 14px;
   color: var(--db-text-primary);
   vertical-align: middle;
 }
 
-/* Company cell: dot + name */
-.db-company-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-/* Colored initial dot */
-.db-company-dot {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  background: var(--accent-grad);
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.db-role-cell {
-  color: var(--db-text-secondary);
-  font-size: 0.82rem;
-}
 
 .db-date-cell {
   color: var(--db-text-secondary);
@@ -638,104 +609,8 @@
   transition: width 0.6s ease;
 }
 
-/* Status badge pill */
-.db-status-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 0.73rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
 
-.badge-excellent {
-  background: rgba(16, 185, 129, 0.12);
-  color: var(--color-excellent);
-  border: 1px solid rgba(16, 185, 129, 0.22);
-}
 
-.badge-good {
-  background: rgba(245, 158, 11, 0.12);
-  color: var(--color-good);
-  border: 1px solid rgba(245, 158, 11, 0.22);
-}
-
-.badge-average {
-  background: rgba(239, 68, 68, 0.12);
-  color: var(--color-average);
-  border: 1px solid rgba(239, 68, 68, 0.22);
-}
-
-/* ── 11. WEAK TOPICS ──────────────────────────────────────────────  */
-.db-weak-list {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  margin-bottom: 20px;
-}
-
-.db-weak-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.db-weak-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.db-weak-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--db-text-primary);
-}
-
-.db-weak-pct {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--db-text-primary);
-}
-
-/* Progress bar track */
-.db-progress-track {
-  height: 7px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-/* Filled portion — color injected inline */
-.db-progress-fill {
-  height: 100%;
-  border-radius: 999px;
-  transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.db-weak-hint {
-  font-size: 0.73rem;
-  color: var(--db-text-secondary);
-}
-
-/* Focused practice CTA button */
-.db-practice-btn {
-  width: 100%;
-  padding: 11px;
-  background: linear-gradient(135deg, rgba(79,142,247,0.15) 0%, rgba(139,92,246,0.15) 100%);
-  border: 1px solid rgba(79, 142, 247, 0.28);
-  border-radius: var(--db-radius-sm);
-  color: var(--accent-blue);
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-align: center;
-  transition: background 0.2s, transform 0.15s;
-}
-
-.db-practice-btn:hover {
-  background: linear-gradient(135deg, rgba(79,142,247,0.25) 0%, rgba(139,92,246,0.25) 100%);
-  transform: translateY(-1px);
-}
 
 /* ── 12. RESPONSIVE ───────────────────────────────────────────────  */
 
@@ -819,4 +694,128 @@
   .db-search-wrap {
     max-width: 180px;
   }
+}
+
+.db-resume-link{
+
+    color:var(--accent-blue);
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:.2s;
+
+}
+
+.db-resume-link:hover{
+
+    color:var(--accent-purple);
+
+    text-decoration:underline;
+
+}
+
+.db-delete-btn{
+
+    width:36px;
+    height:36px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:10px;
+
+    transition:.2s;
+
+}
+
+.db-delete-btn:hover{
+
+    background:rgba(239,68,68,.15);
+
+    color:#ef4444;
+
+}
+
+
+.db-empty-state{
+
+    padding:70px 20px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+}
+
+.db-empty-icon{
+
+    font-size:64px;
+
+    margin-bottom:20px;
+
+}
+
+.db-empty-state h3{
+
+    margin-bottom:10px;
+
+}
+
+.db-empty-state p{
+
+    color:var(--db-text-secondary);
+
+    max-width:350px;
+
+    line-height:1.6;
+
+}
+
+.db-actions{
+
+    display:flex;
+
+    gap:16px;
+
+}
+
+.db-primary-btn{
+
+    padding:14px 26px;
+
+    border-radius:12px;
+
+    background:var(--accent-grad);
+
+    color:white;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+}
+
+.db-secondary-btn{
+
+    padding:14px 26px;
+
+    border-radius:12px;
+
+    border:1px solid var(--db-border);
+
+    color:white;
+
+    text-decoration:none;
+
 }

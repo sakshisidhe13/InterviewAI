@@ -1,6 +1,3 @@
-// FILE: routes/resumeAiRoutes.js
-// PURPOSE: Resume upload + AI analysis endpoint
-
 const express  = require("express");
 const multer   = require("multer");
 const path     = require("path");
@@ -9,14 +6,7 @@ const router   = express.Router();
 const authenticate    = require("../middleware/authenticate");
 const { analyzeResume } = require("../controllers/resumeAiController");
 
-// Store uploaded file temporarily in the uploads/ folder
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename:    (req, file, cb) => {
-    const unique = `resume_${Date.now()}${path.extname(file.originalname)}`;
-    cb(null, unique);
-  },
-});
+const storage = multer.memoryStorage();
 
 // Only accept PDFs
 const upload = multer({
