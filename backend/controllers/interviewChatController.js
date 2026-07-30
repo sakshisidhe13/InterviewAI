@@ -45,6 +45,13 @@ async function startInterview(req, res, next) {
       question: firstQuestion,
     });
   } catch (err) {
+    if (err.code === "AI_UNAVAILABLE") {
+      return res.status(err.status || 503).json({
+        code: err.code,
+        message: err.message,
+      });
+    }
+
     next(err);
   }
 }
@@ -122,6 +129,21 @@ async function sendMessage(req, res, next) {
       completed: false,
     });
   } catch (err) {
+    if (err.code === "AI_UNAVAILABLE") {
+      try {
+        if (req.params.id) {
+          await interviewService.deleteInterview(req.params.id, req.user.id);
+        }
+      } catch (cleanupErr) {
+        console.error("Failed to delete interrupted interview:", cleanupErr);
+      }
+
+      return res.status(err.status || 503).json({
+        code: err.code,
+        message: err.message,
+      });
+    }
+
     next(err);
   }
 }
@@ -160,6 +182,19 @@ async function finishInterview(req, res, next) {
       evaluation,
     });
   } catch (err) {
+    if (err.code === "AI_UNAVAILABLE") {
+      try {
+        await interviewService.deleteInterview(req.params.id, req.user.id);
+      } catch (cleanupErr) {
+        console.error("Failed to delete interrupted interview:", cleanupErr);
+      }
+
+      return res.status(err.status || 503).json({
+        code: err.code,
+        message: err.message,
+      });
+    }
+
     next(err);
   }
 }

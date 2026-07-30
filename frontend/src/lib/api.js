@@ -25,7 +25,15 @@ async function request(path, options = {}) {
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new Error(data.message || "Something went wrong. Please try again.");
+    const error = new Error(
+      data.message || "Something went wrong. Please try again."
+    );
+
+    error.code = data.code;
+    error.status = res.status;
+    error.data = data;
+
+    throw error;
   }
 
   return data;
@@ -117,7 +125,13 @@ export const api = {
       body: formData,
     }).then(async (res) => {
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.message || "Something went wrong.");
+      if (!res.ok) {
+        const error = new Error(data.message || "Something went wrong.");
+        error.code = data.code;
+        error.status = res.status;
+        error.data = data;
+        throw error;
+      }
       return data;
     });
   },

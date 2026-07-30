@@ -11,6 +11,7 @@ async function analyzeResume(file, userId) {
     try {
       const parsed = await pdfParse(file.buffer);
       resumeText = parsed.text.trim();
+      resumeText = resumeText.replace(/\0/g, "");
     } 
     catch (parseErr) {
         console.error("========== PDF PARSE ERROR ==========");
@@ -26,9 +27,17 @@ async function analyzeResume(file, userId) {
     }
 
     const prompt =buildResumeAnalysisPrompt(resumeText);
-    const responseText = await generate(prompt);
+    const responseText = (await generate(prompt)).replace(/\0/g, "");
 
     const analysis = parseGeminiJSON(responseText);
+    console.log({
+      resumeHasNull: resumeText.includes("\0"),
+      responseHasNull: responseText.includes("\0"),
+      fileNameHasNull: file.originalname.includes("\0"),
+    });
+    const cleanAnalysis = JSON.parse(
+      JSON.stringify(analysis).replace(/\\u0000/g, "")
+    );
     const savedResume = await prisma.resume.create({
       data: {
         userId,
@@ -37,7 +46,7 @@ async function analyzeResume(file, userId) {
         score: analysis.score,
         atsScore: analysis.atsScore,
         feedback: analysis.summary,
-        analysis,
+        analysis: cleanAnalysis,
       },
     });
     return {

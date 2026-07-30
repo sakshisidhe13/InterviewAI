@@ -25,6 +25,18 @@ export default function MockInterview() {
   const [totalQuestions, setTotalQuestions] = useState(8);
   const [completed, setCompleted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [showAiUnavailable, setShowAiUnavailable] = useState(false);
+
+  function resetInterview() {
+    setInterviewId(null);
+    setMessages([]);
+    setInterviewStarted(false);
+    setCurrentQuestion(1);
+    setTotalQuestions(8);
+    setCompleted(false);
+    setSending(false);
+    setError("");
+  }
 
   async function finishInterviewFlow() {
     setCompleted(true);
@@ -44,6 +56,12 @@ export default function MockInterview() {
       setError("");
       setMessages((prev) => [...prev, { role: "user", content: answer }]);
       const response = await api.sendInterviewMessage(interviewId, answer);
+
+      if (response.completed) {
+        await finishInterviewFlow();
+        return;
+      }
+
       setMessages((prev) => [
         ...prev,
         {
@@ -54,16 +72,18 @@ export default function MockInterview() {
           questionType: response.question.questionType,
         },
       ]);
+
       setCurrentQuestion(response.currentQuestion);
+
       if (response.totalQuestions) {
         setTotalQuestions(response.totalQuestions);
       }
-      if (response.completed) {
-        await finishInterviewFlow();
+    } catch (err) {
+      if (err.code === "AI_UNAVAILABLE") {
+        setShowAiUnavailable(true);
         return;
       }
-    } catch (err) {
-      console.error(err);
+
       setError(err.message || "Failed to send answer.");
     } finally {
       setSending(false);
@@ -132,6 +152,11 @@ export default function MockInterview() {
       console.log("Interview created:", response.interviewId);
       console.log("First question:", response.question);
     } catch (err) {
+      if (err.code === "AI_UNAVAILABLE") {
+        setShowAiUnavailable(true);
+        return;
+      }
+
       setError(err.message || "Failed to start interview.");
     } finally {
       setStartingInterview(false);
@@ -140,6 +165,28 @@ export default function MockInterview() {
 
   return (
     <div className="mock-interview-page">
+      {showAiUnavailable && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/95 p-8 shadow-2xl backdrop-blur">
+            <h2 className="mb-3 text-2xl font-semibold text-white">
+              ⚠️AI Service Unavailable
+            </h2>
+            <p className="mb-8 leading-7 text-slate-300">
+              The AI is currently not available. Your interview has not been saved. Please try again later.
+            </p>
+            <button
+              className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 font-medium text-white transition hover:border-violet-500 hover:bg-slate-700"
+              onClick={() => {
+                setShowAiUnavailable(false);
+                resetInterview();
+                navigate("/mock-interview", { replace: true });
+              }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
       {interviewStarted ? (
         <InterviewChat
           interviewId={interviewId}

@@ -1,4 +1,3 @@
-
 const geminiService = require("../ai/geminiService");
 const parserService = require("../ai/geminiParser");
 const {
@@ -24,14 +23,11 @@ async function generateFirstQuestion({
 
     return parserService.parseGeminiJSON(response);
   } catch (err) {
-    console.error("Gemini unavailable. Using fallback question.", err.message);
-
-    return {
-      question: `Tell me about yourself and why you're interested in the ${role} position at ${company}.`,
-      topic: "Introduction",
-      difficulty,
-      questionType: "Behavioral",
-    };
+    console.error("Gemini unavailable.", err.message);
+    const error = new Error("The AI is currently not available.");
+    error.code = "AI_UNAVAILABLE";
+    error.status = 503;
+    throw error;
   }
 }
 
@@ -57,44 +53,11 @@ async function generateNextQuestion({
 
     return parserService.parseGeminiJSON(response);
   } catch (err) {
-    console.error("Gemini unavailable. Using fallback question.", err.message);
-
-    const fallbackQuestions = [
-      {
-        question: "Can you explain the Virtual DOM and how React uses it?",
-        topic: "React",
-        difficulty: "Medium",
-        questionType: "Technical",
-      },
-      {
-        question: "What is the difference between useState and useReducer?",
-        topic: "React",
-        difficulty: "Medium",
-        questionType: "Technical",
-      },
-      {
-        question: "Explain JavaScript closures with a practical example.",
-        topic: "JavaScript",
-        difficulty: "Medium",
-        questionType: "Technical",
-      },
-      {
-        question: "Describe a challenging bug you faced and how you solved it.",
-        topic: "Problem Solving",
-        difficulty: "Medium",
-        questionType: "Behavioral",
-      },
-      {
-        question: "How would you optimize the performance of a React application?",
-        topic: "Performance",
-        difficulty: "Hard",
-        questionType: "Technical",
-      },
-    ];
-
-    return (
-      fallbackQuestions[(questionNumber - 1) % fallbackQuestions.length]
-    );
+    console.error("Gemini unavailable.", err.message);
+    const error = new Error("The AI is currently not available.");
+    error.code = "AI_UNAVAILABLE";
+    error.status = 503;
+    throw error;
   }
 }
 

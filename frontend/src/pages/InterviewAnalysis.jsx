@@ -19,24 +19,39 @@ export default function InterviewAnalysis() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  console.log({
+    loading,
+    interview,
+    error,
+  });
+
   useEffect(() => {
-    console.log("Loading interview", id);
+
     async function loadInterview() {
+      
+
       try {
         setLoading(true);
         setError("");
 
         const data = await api.getInterview(id);
+       
         setInterview(data.interview);
+        // console.log("Interview state updated");
       } catch (err) {
-        console.error(err);
+        // console.error("GET failed", err);
         setError(err.message || "Failed to load interview.");
       } finally {
+        // console.log("Loading false");
         setLoading(false);
       }
     }
 
     loadInterview();
+
+    return () => {
+      // console.log("InterviewAnalysis unmounted", id);
+    };
   }, [id]);
 
   if (loading) {
