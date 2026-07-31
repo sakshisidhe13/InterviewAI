@@ -2,7 +2,7 @@
 // Handles creating and retrieving a user's mock interview records.
 
 const interviewService = require("../services/interview/interviewService");
-
+const prisma = require("../lib/prisma");
 // ── GET ALL INTERVIEWS FOR CURRENT USER ──────────────────────────
 /**
  * GET /api/interviews
